@@ -3,7 +3,7 @@ const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
 const cors = require('cors');
-const studentRoutes=require('./routes/students');
+const userRoutes=require('./routes/users');
 const authRoutes=require('./routes/auth');
 
 //middlewares
@@ -26,6 +26,6 @@ app.listen(PORT, () => {
 });
 
 //routes
-app.use('/api/students', studentRoutes);
+app.use('/api/users', userRoutes);
 app.use('/api/auth', authRoutes);
 

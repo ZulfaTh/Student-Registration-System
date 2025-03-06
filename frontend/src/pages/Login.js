@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
-import { TextField, Button, Box, Typography, Container, Grid, Paper } from '@mui/material';
+import { TextField, Button,  Typography, Container, Grid, Paper } from '@mui/material';
 import { Link } from "react-router-dom";
 
 const Login = () => {
@@ -22,9 +22,10 @@ const Login = () => {
         try {
             const url = "http://localhost:8080/api/auth";
             const { data: res } = await axios.post(url, data);
-            navigate("/");
-            localStorage.setItem("token", res.data); // Store JWT Token in Local Storage
-            window.location = "/" // Optional, to refresh the page after login
+            localStorage.setItem("token", res.data);
+navigate("/");
+window.location = "/";
+
         } catch (error) {
             if (error.response && 
                 error.response.status >= 400 && 

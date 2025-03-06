@@ -1,5 +1,5 @@
 const router=require("express").Router();
-const {Student}=require("../models/Student");
+const {User}=require("../models/User");
 const  Joi=require("joi");
 const bcrypt=require("bcrypt");
 
@@ -14,21 +14,23 @@ router.post("/",async(req,res)=>{
 
 
          //  Check if user exists
-        const student = await Student.findOne({email:req.body.email});
-        if(!student)
+        const user = await User.findOne({email:req.body.email});
+        if(!user)
             return res.status(401).send({message:"Invalid Email or Password"});
 
 
         //  Compare Password
-        const validPassword=await bcrypt.compare(req.body.password,student.password);
+        const validPassword=await bcrypt.compare(req.body.password,user.password);
 
         if(!validPassword)
             return res.status(401).send({message:"Invalid Email or Password"});
 
         //generate JWT token
 
-        const token=student.generateAuthToken();
+        const token=user.generateAuthToken();
         res.status(200).send({data:token,message:"Logged in Successfully"});
+        console.log("Generated Token:", token);
+
 
 
         
