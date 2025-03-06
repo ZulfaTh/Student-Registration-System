@@ -11,8 +11,7 @@ const studentSchema = new mongoose.Schema({
     age: { type: Number, required: true },
     email: { type: String, required: true },
     password: { type: String, required: true },
-    // grade: { type: String, required: true },
-    // subjects: [{ type: String }],
+    
 });
 
 studentSchema.methods.generateAuthToken=function(){
@@ -29,8 +28,7 @@ const validate=(data)=>{
         age:Joi.number().required().label("Age"),
         email:Joi.string().required().label("Email"),
         password:Joi.string().required().label("Password"),
-        // grade:Joi.string().required().label("Grade"),
-        // subjects:Joi.string().required().label("Subjects")
+        
     });
     return schema.validate(data);
 };
