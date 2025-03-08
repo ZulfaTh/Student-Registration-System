@@ -18,9 +18,9 @@ const SignUp = () => {
     age: "",
     email: "",
     password: "",
-    adminCode: "", // For teacher's admin code
+    adminCode: "", 
   });
-  const [isTeacher, setIsTeacher] = useState(false); // Defaults to student form
+  const [isTeacher, setIsTeacher] = useState(false); 
   const navigate = useNavigate();
   const [error, setError] = useState("");
   const [open, setOpen] = useState(false);
@@ -38,7 +38,7 @@ const SignUp = () => {
     // Prepare the data object to include the role
     let userData = {
       ...data,
-      role: userRole, // Add role dynamically based on form input
+      role: userRole, 
     };
 
     // Remove age for teachers, as they don't need it
@@ -47,8 +47,12 @@ const SignUp = () => {
     }
 
 
+    if (!isTeacher) {
+      delete userData.adminCode;  
+    }
+    
       // Validate age for students
-    if (!isTeacher) { // Apply validation only for students
+    if (!isTeacher) { 
         const ageInt = parseInt(data.age, 10); // Convert age to integer
         if (isNaN(ageInt) || ageInt <= 18) {
             setError("Age must be greater than 18 to register as a student.");
@@ -64,10 +68,9 @@ const SignUp = () => {
       return;
     }
 
-    console.log("Sending data:", userData); // Log the data for debugging
-
+    console.log("Sending data:", userData); 
     try {
-      const url = "http://localhost:8080/api/users"; // Correct endpoint for registration
+      const url = "http://localhost:8080/api/users";
       const { data: res } = await axios.post(url, userData);
       console.log(res.message);
       navigate("/login");
@@ -109,20 +112,20 @@ const SignUp = () => {
           item
           xs={4}
           sx={{
-            backgroundColor: "#3bb19b",
+            backgroundColor: "#4da5f7",
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
             justifyContent: "center",
           }}
         >
-          <Typography variant="h4" color="white">
+          <Typography variant="h5" color="white" sx={{ fontFamily: "Lucida Handwriting" }}>
             Welcome Back
           </Typography>
           <Link to="/login">
             <Button
               variant="outlined"
-              sx={{ mt: 2, color: "white", borderColor: "white" }}
+              sx={{ mt: 2, color: "blue", borderColor: "blue" ,fontFamily: "Copperplate"  }}
             >
               Sign In
             </Button>
@@ -140,12 +143,11 @@ const SignUp = () => {
             p: 4,
           }}
         >
-          <Typography variant="h4" gutterBottom>
+          <Typography variant="h4" sx={{ fontFamily: "Copperplate" }}>
             CREATE ACCOUNT
           </Typography>
-
-          {/* Button to switch between student and teacher forms */}
-        {/* Button to switch between student and teacher forms */}
+<br/>
+       
 <div style={{ display: "flex", gap: "10px" }}>
   <Button
     variant={isTeacher ? "outlined" : "contained"} // Change variant based on state
@@ -153,10 +155,10 @@ const SignUp = () => {
     sx={{
       mb: 2,
       width: "200px",
-      backgroundColor: isTeacher ? "white" : "#3bb19b", // Green when selected
-      color: isTeacher ? "#3bb19b" : "white", // Text color
+      backgroundColor: isTeacher ? "white" : "#4da5f7", // Green when selected
+      color: isTeacher ? "#4da5f7" : "white", // Text color
       "&:hover": {
-        backgroundColor: "#3bb19b", // Hover effect
+        backgroundColor: "#123f69", // Hover effect
         color: "white",
       },
     }}
@@ -170,10 +172,10 @@ const SignUp = () => {
     sx={{
       mb: 2,
       width: "200px",
-      backgroundColor: isTeacher ? "#3bb19b" : "white", // Green when selected
-      color: isTeacher ? "white" : "#3bb19b",
+      backgroundColor: isTeacher ? "#4da5f7" : "white", // Green when selected
+      color: isTeacher ? "white" : "#4da5f7",
       "&:hover": {
-        backgroundColor: "#3bb19b", // Hover effect
+        backgroundColor: "#123f69", // Hover effect
         color: "white",
       },
     }}
@@ -185,7 +187,7 @@ const SignUp = () => {
 
           {/* Form fields */}
           <form onSubmit={handleSubmit}>
-            {/* Conditionally render admin code for teachers */}
+           
             {isTeacher && (
               <TextField
                 fullWidth
