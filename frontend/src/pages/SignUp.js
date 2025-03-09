@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
 import {
@@ -21,9 +21,11 @@ const SignUp = () => {
     adminCode: "", 
   });
   const [isTeacher, setIsTeacher] = useState(false); 
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const [error, setError] = useState("");
   const [open, setOpen] = useState(false);
+
+  const [msg, setMsg] = useState("");//for email
 
   const handleChange = ({ target: input }) => {
     setData({ ...data, [input.name]: input.value });
@@ -72,8 +74,12 @@ const SignUp = () => {
     try {
       const url = "http://localhost:8080/api/users";
       const { data: res } = await axios.post(url, userData);
-      console.log(res.message);
-      navigate("/login");
+
+      // console.log(res.message);
+      // navigate("/login");
+
+      setMsg(res.message);
+
     } catch (error) {
       if (error.response) {
         setError(error.response.data.message);
@@ -255,7 +261,7 @@ const SignUp = () => {
               required
               sx={{ mb: 2 }}
             />
-
+{msg }
             <Button fullWidth variant="contained" color="primary" type="submit">
               Sign Up
             </Button>
