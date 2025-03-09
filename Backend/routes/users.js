@@ -3,6 +3,12 @@ const { User, validate } = require("../models/User");
 const bcrypt = require("bcrypt");
 const multer = require("multer");
 const path = require("path");
+const Token=require("../models/token");
+const sendEmail=require("../utils/sendEmail");
+const crypto=require("crypto");
+
+
+
 
 // Register a new User
 router.post("/", async (req, res) => {
@@ -10,7 +16,7 @@ router.post("/", async (req, res) => {
     // Validate request body
     const { error } = validate(req.body);
     if (error) {
-      return res.status(400).send({ message: error.details[0].message });
+      return res.status(400).send({ message: error.details[0].message }); 
     }
 
     // Check if user already exists
@@ -18,7 +24,7 @@ router.post("/", async (req, res) => {
     if (existingUser) {
       return res
         .status(409)
-        .send({ message: "User with given email already exists" });
+        .send({ message: "User with given email already exists" }); 
     }
 
     // Hash the password before saving
@@ -31,14 +37,50 @@ router.post("/", async (req, res) => {
       password: hashedPassword,
     });
 
-    // Save the new user to the database
+    // Save the new user
     await newUser.save();
-    res.status(201).send({ message: "User Added Successfully" });
+
+    // Generate verification token
+    const token = await new Token({
+      userId: newUser._id, // 
+      token: crypto.randomBytes(32).toString("hex"),
+    }).save();
+
+    // Send verification link
+    const url = `${process.env.BASE_URL}users/${newUser._id}/verify/${token.token}`;
+    await sendEmail(newUser.email, "Verify Email", url); 
+
+    return res
+      .status(201)
+      .send({ message: "An email has been sent to verify your account." });
+
   } catch (error) {
     console.error("Error during registration:", error);
-    res.status(500).send({ message: "Internal Server Error" });
+    return res.status(500).send({ message: "Internal Server Error" }); 
   }
 });
+
+
+router.get("/:id/verify/:token/", async (req, res) => {
+  	try {
+  		const user = await User.findOne({ _id: req.params.id });
+  		if (!user) return res.status(400).send({ message: "Invalid link" });
+  
+  		const token = await Token.findOne({
+  			userId: user._id,
+  			token: req.params.token,
+  		});
+  		if (!token) return res.status(400).send({ message: "Invalid link" });
+  
+  		await User.updateOne({ _id: user._id }, { $set: { verified: true } }); 
+
+  		await token.remove();
+  
+  		res.status(200).send({ message: "Email verified successfully" });
+  	} catch (error) {
+  		res.status(500).send({ message: "Internal Server Error" });
+  	}
+  });
 
 // Get users with optional filtering by role
 router.get("/", async (req, res) => {
